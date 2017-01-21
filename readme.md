@@ -31,7 +31,13 @@ _a broad overview of Categories, Subcategories, and Locations:_
 
 # The Data
 
-The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-market%20archives), specifically raw crawls of HTML pages on the market Agora from January 2014 through July 2015. Data was extracted using `rvest` across a series of directories, culminating in a single bound dataframe comprising approximately 2.3 million observations of 11 variables. 
+The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-market%20archives), specifically raw HTML page crawls of the market Agora from January 2014 through July 2015. Data was extracted using `rvest` across a series of directories, culminating in a single bound dataframe comprising approximately 2.3 million observations of 11 variables. 
+
+![catmap01](http://pi.mozzarella.website/BMC/EDA-CatMap.png)
+
+_a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While this might not be the ideal visualization method, my hope is to give an introductory sense of the scale of a major darknet market. zoomable._
+
+![catmap01](http://pi.mozzarella.website/BMC/EDA-Categorical-Heatmap.jpg)
 
 ## Variables Provided
 
