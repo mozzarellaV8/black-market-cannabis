@@ -1,0 +1,113 @@
+---
+title: "Exploratory Cannabis Analysis"
+output: html_notebook
+---
+
+# Should I Smoke This? 
+
+_an exploratory darknet market cannabis analysis_
+
+Over the years much has been made of so-called darknet markets - anonymous forums for commerce that exist largely on the Tor network. This analysis seeks to predict quality of cannabis from market listings, based on 
+
+- product descriptions
+- price
+- derived textual variables from product and feedback fields
+- a set of ordinal feedback scores provided
+- where it's from
+- what day of the month it is
+- a vendor's number of listings
+
+A first major assumption: all of this is true.
+
+
+```{r load data}
+# load data -------------------------------------------------------------------
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(data.table)
+
+cannabis <- fread("data/cannabis-V1.csv", stringsAsFactors = T)
+cannabis <- as.data.frame(cannabis)
+
+```
+
+The Cannabis dataset is subsetted from a larger dataset of daily darknet market listings. The market itself was Agora, the data from Black Market Archives. It covers approximately 18 months of daily listings; another feature of note is that it was, for a time, the largest darknet market in operation following the demise of Silk Road 2. 
+
+```{r}
+
+# feedback distribution
+summary(cannabis$fb)
+```
+
+Here we have feedback scores ranging on a scale from 0 to 5 (5/5 being the best; 0/5 being the worst). The `-1` assigned here refers to listings that had _no feedback_; these are of note because they generally indicate that the product listed went unsold, for any number of reasons (but generally trust, poor price/quality). The culture of the darknet encouraged buyers to leave feedback on transactions; unlike clearnet ecommerce, feedback weighs more heavily on the darknet due to their anonymous nature, lack of consumer protections, and generally instability and susceptibility to scams. 
+
+It's in a vendor's _and_ client's bests interest to cultivate the highest possible feedback scores. 
+
+```{r}
+nrow(cannabis)
+```
+
+Within the Cannabis subset there are 404,080 listings over 18 months. What are the relative percentages of feedback to this? 
+
+```{r}
+
+options(scipen = 999)
+
+cannabis %>%
+  group_by(fb) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n/sum(n))
+
+```
+
+41% of listings are of unknown quality; they have no feedback. 56% of listings have the strongest possible feedback. It might be worthwhile to group feedback into a further generalization, from the consumer perspective:
+
+- 2 and below: don't smoke this
+- 3 and -1: roll the dice
+- 4 and 5: go ahead and smoke it
+
+An initial logistic regression looking at the how fb/feedback might be determined by price and number of words in the feedback listing.
+
+```{r}
+library(broom)
+
+model01 <- glm(fb ~ price + f.words, family = binomial, data = cannabis)
+tidy(model01)
+
+```
+
+```{r}
+summary(model01)
+```
+
+
+```{r}
+
+model02 <- glm(fb ~ usd + gold.oz + Index + Kind + Mids + Schwag + brent.oil + wti.oil + p.words, family = "binomial", data = cannabis)
+tidy(model02)
+
+```
+
+```{r}
+summary(model02)
+```
+
+```{r}
+m02_output <- tidy(model02)
+summary(m02_output)
+exp(m02_output$estimate)
+```
+
+```{r}
+m02.out <- coef(summary(model02))
+m02.out[, "Estimate"] <- exp(coef(model02))
+m02.out
+```
+
+```{r}
+augment(model02)
+```
+
+
