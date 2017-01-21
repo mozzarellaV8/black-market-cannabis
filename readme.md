@@ -32,9 +32,8 @@ The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-ma
 
 ![catmap01](http://pi.mozzarella.website/BMC/EDA-Categoricals-V.png)
 
-_a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While not be the ideal visualization method, my hope is to give an introductory sense of scale, products, and locations comprising a major darknet market. more legible when zoomed._
+_a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While not the ideal visualization method, my hope is to give an introductory sense of the scale, types of products, and locations comprising a major darknet market._ More legible when zoomed into.
 
-![catmap01](http://pi.mozzarella.website/BMC/EDA-Categorical-Heatmap.jpg)
 
 ## Variables Provided
 
