@@ -7,7 +7,7 @@ library(tidyr)
 library(ggplot2)
 library(data.table)
 
-agora.all <- fread("data/agora-04.csv", stringsAsFactors = T)
+agora.all <- fread("~/GitHub/agora-data/agora-04.csv", stringsAsFactors = T)
 str(agora.all)
 nrow(agora.all)
 # 2322961
@@ -23,15 +23,21 @@ agora.all <- subset(agora.all, agora.all$cat != "Electronics" & agora.all$cat !=
 
 agora.all$cat <- factor(agora.all$cat)
 
-catmap01 <- ggplot(agora.all, aes(from, subcat, fill = cat)) +
-  geom_tile(colour = "white", size = 1) + 
-  theme_minimal(base_size = 12, base_family = "GillSans") +
-  theme(plot.title = element_text(size = 10, margin = margin(0, 0, 20, 0))) + 
-  theme(axis.text.x = element_text(size = 11.5, angle = 45, hjust = 1)) +
-  theme(axis.text.y = element_text(size = 12.5, lineheight = 1)) +
-  theme(plot.margin = unit(c(0, 0.25, 0, 0.25), "cm")) +
-  labs(title = "Agora Marketplace: Category ~ Subcategory + Location (n = 2237562)",
-       y = "", x = "", fill = "category")
+# select location, category, subcategory
+agCat <- agora.all %>%
+  select(from, cat, subcat)
+
+nrow(agCat)
+# 2237562
+
+catmap01 <- ggplot(agCat, aes(from, subcat, fill = cat)) +
+  geom_tile(colour = "white", size = 0.75) + 
+  theme_minimal(base_size = 11, base_family = "GillSans") +
+  theme(axis.text.x = element_text(size = 9.5, angle = 45, hjust = 1)) +
+  theme(axis.text.y = element_text(size = 11, lineheight = 1)) +
+  theme(plot.margin = unit(c(0, 0.25, 0, 0.25), "cm"),
+        legend.position = "top") +
+  labs(title = "", y = "", x = "", fill = "category")
 
 catmap01 + scale_fill_manual(values = c("red3", "gold1", "deepskyblue4", "lightblue3", 
                                    "red1", "bisque1", "bisque3", "bisque4", 
