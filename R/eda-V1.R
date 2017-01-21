@@ -43,6 +43,19 @@ catmap01 + scale_fill_manual(values = c("red3", "gold1", "deepskyblue4", "lightb
                                    "red1", "bisque1", "bisque3", "bisque4", 
                                    "darkorange3", "firebrick4"))
 
+catmap02 <- ggplot(agCat, aes(subcat, from, fill = cat)) +
+  geom_tile(colour = "white", size = 0.75) + 
+  theme_minimal(base_size = 11, base_family = "GillSans") +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1)) +
+  theme(axis.text.y = element_text(size = 11, lineheight = 1)) +
+  theme(plot.margin = unit(c(0, 0.25, 0, 0.25), "cm"),
+        legend.position = "top") +
+  labs(title = "", y = "", x = "", fill = "category")
+
+catmap02 + scale_fill_manual(values = c("red3", "gold1", "deepskyblue4", "lightblue3", 
+                                        "red1", "bisque1", "bisque3", "bisque4", 
+                                        "darkorange3", "firebrick4"))
+
 # cannabis subset -------------------------------------------------------------
 
 levels(agora.all$subcat)

@@ -7,16 +7,18 @@ Logistic Regression Classification model to predict cannabis quality on darknet 
 
 In times of political uncertainty, what can be learned from something that is inherently uncertain? 
 
-As legalized/de-criminalized use of cannabis grows, darknet markets might serve as a proto-model of how marijuana e-commerce can be conducted. Conversely, as policies have begun to change under a new presidential administration, darknet markets might grow as a primary means for clients to acquire cannabis. 
+As legalized and de-criminalized use of cannabis grows, darknet markets might serve as a proto-model of how marijuana e-commerce can be conducted. Conversely, as policies have begun to change under a new presidential administration, darknet markets might grow as a primary means for clients to acquire cannabis. 
 
 Is it possible to make reasonable estimates on the quality of cannabis offered on darknet markets? 
 How does darknet cannabis compare to other markets in terms of price? What other factors might influence quality? How do location, asking price, bitcoin-USD exchange rate, and textual features contribute to quality? 
 
 ## On Darknet Markets
 
-**Client feedback plays a central role for inferring the reputability of a darknet vendor, and by extension, the quality of the product. There is incentive for both vendor and client for honest feedback to be submitted.**
+**Client feedback plays a central role for inferring the reputability of a darknet vendor, and by extension, the quality of the product. There is incentive for both vendor and client for honest feedback to regularly be submitted.**
 
 Darknet markets face issues that largely have been resolved in clearnet e-commerce - stability, trust in products and payment processes. The trade-off is anonymity, which provides the freedom to buy and sell products outside the law. 
+
+In some respects, darknet markets might resemble the early days of eBay given the importance feedback and reputation<sup>1</sup>.
 
 Because of these issues, client feedback plays an important role in vendor reputability. A vendor without a history of good client feeback would generally appear as a risk to any potential client. With anonymity also comes the potential for scams - be it a vendor disappearing with payment without delivering, the client doing the same, or the market simply disappearing overnight. To address this the first two issues, different payment options emerged:
 
@@ -26,7 +28,7 @@ Because of these issues, client feedback plays an important role in vendor reput
 
 _a broad overview of Categories, Subcategories, and Locations:_
 
-![catmap01](http://pi.mozzarella.website/BMC/EDA-CatMap.png)
+![catmap01](http://pi.mozzarella.website/BMC/EDA-Categoricals.jpg)
  
 
 # The Data
@@ -35,7 +37,7 @@ The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-ma
 
 ![catmap01](http://pi.mozzarella.website/BMC/EDA-CatMap.png)
 
-_a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While this might not be the ideal visualization method, my hope is to give an introductory sense of the scale of a major darknet market. zoomable._
+_a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While not be the ideal visualization method, my hope is to give an introductory sense of scale, products, and locations comprising a major darknet market. more legible when zoomed._
 
 ![catmap01](http://pi.mozzarella.website/BMC/EDA-Categorical-Heatmap.jpg)
 
@@ -51,7 +53,7 @@ _a broad overview of Categories, Subcategories, and Locations on Agora Marketpla
 - shipping destinations - _where a vendor is willing to ship to_
 - client feedback
 - vendor bio - _in progress_
-- vendor verification* - _in progress_ - binary - _a vendor will either be registered, or will have the added bonus of being vouched for on another darknet market._
+- vendor verification - _in progress_ - binary - _a vendor will either be registered, or will have the added bonus of being vouched for on another darknet market._
 
 ## Variables Derived
 
@@ -78,5 +80,11 @@ The reason behind comparing cannabis prices to the High Times index is to see if
 - corresponding price for barrel of WTI crude oil 
 - price for barrel of Brent crude oil
 - US retail electricy prices - _in progress_
+
+# Works Cited
+
+<sup1>1</sup1> [Trust Among Strangers in Internet Transactions:
+Empirical Analysis of eBay’s Reputation System](http://cseweb.ucsd.edu/groups/csag/html/teaching/cse225s04/Reading%20List/E-bay-Empirical-BodegaBay.pdf) - abstract
+
 
 
