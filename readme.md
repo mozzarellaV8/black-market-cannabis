@@ -25,17 +25,12 @@ Because of these issues, client feedback plays an important role in vendor reput
 - FE, or finalize early - a client agrees to pay in advance for any product ordered. This method poses significant risk for the client, and generally can only be enforced by vendors with _very_ strong reputations - long transaction histories with total positive feedback.
 
 - Escrow - where a third party arbiter (generally the market themselves) holds client payment in escrow until the product is delivered. Generally, this has been seen as the most 'trustworthy' method of doing business, where risk is spread to both client and vendor.
-
-_a broad overview of Categories, Subcategories, and Locations:_
-
-![catmap01](http://pi.mozzarella.website/BMC/EDA-Categoricals.jpg)
  
-
 # The Data
 
 The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-market%20archives), specifically raw HTML page crawls of the market Agora from January 2014 through July 2015. Data was extracted using `rvest` across a series of directories, culminating in a single bound dataframe comprising approximately 2.3 million observations of 11 variables. 
 
-![catmap01](http://pi.mozzarella.website/BMC/EDA-CatMap.png)
+![catmap01](http://pi.mozzarella.website/BMC/EDA-Categoricals-V.png)
 
 _a broad overview of Categories, Subcategories, and Locations on Agora Marketplace (n = 2322961). While not be the ideal visualization method, my hope is to give an introductory sense of scale, products, and locations comprising a major darknet market. more legible when zoomed._
 
