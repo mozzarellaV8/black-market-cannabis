@@ -10,11 +10,11 @@ In times of political uncertainty, what can be learned from something that is in
 As legalized/de-criminalized use of cannabis grows, darknet markets might serve as a proto-model of how marijuana e-commerce can be conducted. Conversely, as policies have begun to change under a new presidential administration, darknet markets might grow as a primary means for clients to acquire cannabis. 
 
 Is it possible to make reasonable estimates on the quality of cannabis offered on darknet markets? 
-How does darknet cannabis compare to other markets in terms of price? What other factors might influence quality? 
+How does darknet cannabis compare to other markets in terms of price? What other factors might influence quality? How do location, asking price, bitcoin-USD exchange rate, and textual features contribute to quality? 
 
 ## On Darknet Markets
 
-_What follows are broad, broad notes on how DNMs operate - a very **general** discussion._
+**Client feedback plays a central role for inferring the reputability of a darknet vendor, and by extension, the quality of the product. There is incentive for both vendor and client for honest feedback to be submitted.**
 
 Darknet markets face issues that largely have been resolved in clearnet e-commerce - stability, trust in products and payment processes. The trade-off is anonymity, which provides the freedom to buy and sell products outside the law. 
 
@@ -24,35 +24,35 @@ Because of these issues, client feedback plays an important role in vendor reput
 
 - Escrow - where a third party arbiter (generally the market themselves) holds client payment in escrow until the product is delivered. Generally, this has been seen as the most 'trustworthy' method of doing business, where risk is spread to both client and vendor.
 
+_a broad overview of Categories, Subcategories, and Locations:_
+
+![catmap01](http://pi.mozzarella.website/BMC/EDA-CatMap.png)
+ 
+
 # The Data
 
 The data comes courtesy of [Black Market Archives](http://www.gwern.net/Black-market%20archives), specifically raw crawls of HTML pages on the market Agora from January 2014 through July 2015. Data was extracted using `rvest` across a series of directories, culminating in a single bound dataframe comprising approximately 2.3 million observations of 11 variables. 
 
 ## Variables Provided
 
-- date
-- URL
-- vendor
-- product listing - _resembling a Craigslist headline_
+- date 
+- URL  
+- vendor  
+- product listing - _resembles Craigslist headlines_
 - price in Bitcoin
 - category, subcategory, and sub-subcategory of product
 - origin location - _where a vendor is shipping from_
 - shipping destinations - _where a vendor is willing to ship to_
 - client feedback
-- vendor bio*
-- vendor verification* - binary - _a vendor will either be registered, or will have the added bonus of being vouched for on another darknet market._
-
-* _in progress_
-
+- vendor bio - _in progress_
+- vendor verification* - _in progress_ - binary - _a vendor will either be registered, or will have the added bonus of being vouched for on another darknet market._
 
 ## Variables Derived
 
-_...and looked up/added_
-
 - price in USD - _via daily BTC-USD exchange rate_
-- feedback score - ordinal values assigned, as feedback is left on a 0-5 scale along with description.
+- feedback score - assigned ordinal values, as feedback is left on a 0-5 scale along with description.
 
-**text features**
+**Text Features**
 
 Given the importance of feedback, these are features to be derived from 3 possible textual fields: product listing, product description, client feedback, and vendor bio. The goal is to create quantitative variables that might provide reasonable metrics for cannabis quality. 
 
@@ -61,7 +61,9 @@ Given the importance of feedback, these are features to be derived from 3 possib
 - sentiment scores
 - TF-IDF
 
-**variables added: price indices**
+The high level category _Cannabis_ is divided into 5 subcategories: _weed_, _synthetics_, _seeds_, _hash_, _edibles_, and _concentrates_. Can a topic model be fit to observe textual trends or features within these finer grain categories? 
+
+**Variables Added: Price Indices**
 
 The reason behind comparing cannabis prices to the High Times index is to see if price might be a factor in darknet transactions. Gold and oil prices were added to test the idea of cannabis as a commodity. 
 
@@ -69,6 +71,6 @@ The reason behind comparing cannabis prices to the High Times index is to see if
 - corresponding price for ounce of gold
 - corresponding price for barrel of WTI crude oil 
 - price for barrel of Brent crude oil
-- nuclear energy stock price index - via 3 US companies. 
+- US retail electricy prices - _in progress_
 
 
