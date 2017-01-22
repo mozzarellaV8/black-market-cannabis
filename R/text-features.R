@@ -7,6 +7,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(tidytext)
+library(stringr)
 library(data.table)
 library(scales)
 
@@ -175,13 +176,15 @@ p.tokens %>%
 # with color mapped to price, its shown that there's sporadic high price items
 # but a barplot at this distance isn't clear enough to draw firm conclusions.
 
-# compare word frequencies by location ----------------------------------------
+# Word Frequencies by Location ------------------------------------------------
 # from an exploratory plot, the top 8 countries with the most listings were:
 # USA, Germany, UK, Canada, Netherlands, China, Australia, and No Info
 
 p.tokens$origin <- factor(p.tokens$origin)
 levels(p.tokens$origin)
 
+
+# Word Frequencies by Location: Manual Computation ----------------------------
 p.usa <- p.tokens %>% 
   filter(origin == "USA") %>%
   arrange(linenumber)
@@ -225,12 +228,88 @@ nrow(p.noinfo)/nrow(p.tokens)   # 0.04144455
 # USA: 44%, Germany: 9.3%, Canada: 8.4%, UK: 8.0%
 # Netherlands: 5.6%, Aus: 4.4%, China: 4.0%, No Info: 4.1%
 
+p.usa %>%
+  count(word, sort = T)
+#      word    nn
+#     <chr> <int>
+# 1       1 49158
+# 2      oz 20628
+# 3   grams 19519
+# 4    kush 16943
+# 5   grade 15739
+# 6     thc 15179
+# 7     top 15078
+# 8   shelf 14658
+# 9  indoor 14517
+# 10   free 14266
 
+p.germany %>%
+  count(word, sort = T)
+#        word    nn
+#       <chr> <int>
+# 1      free 11041
+# 2  shipping 10961
+# 3      haze 10559
+# 4        fe  7698
+# 5      hash  7145
+# 6   quality  5375
+# 7  discount  5193
+# 8  required  5002
+# 9        gr  4706
+# 10       5g  4704
 
+# Interesting to being seeing the most common words by location.
+# Just a quick glance shows USA names products more frequently, 
+# while Germany has more words related to the transaction process. 
 
+# Note: all this could be done with far less code by simply filtering,
+# instead of creating new variables for each location.
+
+# filter for USA
+p.tokens %>%
+  filter(origin == "USA") %>%
+  count(word, sort = T)
+
+# Germany
+p.tokens %>%
+  filter(origin == "Germany") %>%
+  count(word, sort = T)
+  
+# Calculate Frequencies by Location: Tidy Version -----------------------------
+
+# bind top 8 countries
+# this could be a simple select call from the master df,
+# but a bit roundabout from following tidytext tutorial.
+p.8 <- bind_rows(
+  mutate(p.usa, origin == "USA"),
+  mutate(p.germany, origin == "Germany"),
+  mutate(p.uk, origin == "UK"),
+  mutate(p.canada, origin == "Canada"),
+  mutate(p.netherlands, origin == "Netherlands"),
+  mutate(p.china, origin == "China"),
+  mutate(p.aus, origin == "Australia"),
+  mutate(p.noinfo, origin == "No Info")
+)
+
+# frequency as percentage for top 8 countries
+frequency.8 <- p.8 %>%
+  count(origin, word) %>%
+  mutate(pct = nn / sum(nn))
+
+# plot word frequencies by location
+ggplot(frequency.8, aes(x = pct, y = ))
   
 
-
+ggplot(frequency, aes(x = other, y = austen, color = abs(austen - other))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
+  facet_wrap(~author, ncol = 2) +
+  theme(legend.position="none") +
+  labs(y = "Jane Austen", x = NULL)
 
 
 
