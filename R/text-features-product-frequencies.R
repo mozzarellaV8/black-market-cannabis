@@ -1,5 +1,6 @@
 # Darknet Cannabis Analysis
-# Derivation of textual features
+# Derivation of textual features: Product Listings
+# Word Frequencies
 
 # load data -------------------------------------------------------------------
 
@@ -16,15 +17,29 @@ cannabis <- fread("~/GitHub/bmc-data/cannabis-V2.csv", stringsAsFactors = T)
 cannabis <- as.data.frame(cannabis)
 
 ### intermediate data: tokenized dataframe
-### code after line 80
-p.tokens <- fread("~/GitHub/bmc-data/pTokensV1.csv")
+### begin with code after line 114
+p.tokens <- fread("~/GitHub/bmc-data/pTokensV2.csv")
 p.tokens <- as.data.frame(p.tokens)
 
 # this dataset contains 18 momths of listings from darknet market Agora
 # will need to split this into training and test sets after feature engineering.
 
-# Product Listings ------------------------------------------------------------
-# following tidytext
+# ggplot theme ----------------------------------------------------------------
+
+# define a custom theme for plotting
+# modifies theme_minimal() with type set in Gill Sans
+# and italic axis titles in Times
+pd.theme <- theme_minimal(base_size = 12, base_family = "GillSans") +
+  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        axis.title = element_text(family = "Times", face = "italic", size = 12),
+        axis.title.x = element_text(margin = margin(20, 0, 0, 0)),
+        axis.title.y = element_text(margin = margin(0, 20, 0, 0)))
+
+pd.classic <- theme_classic(base_size = 14, base_family = "GillSans") +
+  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        axis.title = element_text(family = "Times", face = "italic", size = 12))
+
+# Preprocess: Product Listings ------------------------------------------------
 
 # select variables and group by location
 products <- cannabis %>%
@@ -51,7 +66,7 @@ products$feedback <- as.character(products$feedback)
 products$type <- factor(products$type)
 products$vendor <- factor(products$vendor)
 
-# Product Listings: Unnest Tokens ---------------------------------------------
+# Preprocess: Unnest Tokens ---------------------------------------------------
 
 # one token-per-row format
 p.tokens <- products %>%
@@ -78,9 +93,7 @@ p.tokens <- p.tokens %>%
 
 p.tokens$date <- as.Date(p.tokens$date)
 
-# write.csv(p.tokens, file = "~/GitHub/bmc-data/pTokensV1.csv", row.names = F)
-
-# Removing Stop Words ---------------------------------------------------------
+# Preprocess: Removing Stop Words ---------------------------------------------
 
 # import stop words
 data("stop_words")
@@ -96,26 +109,7 @@ nrow(p.tokens)
 # 2349404 observations of 9 variables
 # 236398 stopwords removed
 
-# ggplot theme ----------------------------------------------------------------
-
-# define a custom theme for plotting
-# modifies theme_minimal() with type set in Gill Sans
-# and italic axis titles in Times
-pd.theme <- theme_minimal(base_size = 12, base_family = "GillSans") +
-  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        axis.title = element_text(family = "Times", face = "italic", size = 12))
-
-pd.classic <- theme_classic(base_size = 14, base_family = "GillSans") +
-  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        axis.title = element_text(family = "Times", face = "italic", size = 12))
-
-# gradient palette
-pd.pal <- scale_fill_gradient2(low = "deepskyblue4",
-                               mid = "gray96", 
-                               high = muted("firebrick4"),
-                               midpoint = 365)
-
-
+# write.csv(p.tokens, file = "~/GitHub/bmc-data/pTokensV2.csv", row.names = F)
 
 # Word Frequencies ------------------------------------------------------------
 # counting and plotting
@@ -228,6 +222,7 @@ nrow(p.noinfo)/nrow(p.tokens)   # 0.04144455
 # USA: 44%, Germany: 9.3%, Canada: 8.4%, UK: 8.0%
 # Netherlands: 5.6%, Aus: 4.4%, China: 4.0%, No Info: 4.1%
 
+# Top Word Frequencies by Country ---------------------------------------------
 p.usa %>%
   count(word, sort = T)
 #      word    nn
@@ -245,7 +240,7 @@ p.usa %>%
 
 p.germany %>%
   count(word, sort = T)
-#        word    nn
+#        word     n
 #       <chr> <int>
 # 1      free 11041
 # 2  shipping 10961
@@ -257,6 +252,13 @@ p.germany %>%
 # 8  required  5002
 # 9        gr  4706
 # 10       5g  4704
+
+p.china %>%
+  count(word, sort = T)
+
+p.tokens %>%
+  filter(origin == "Canada") %>%
+  count(word, sort = T)
 
 # Interesting to being seeing the most common words by location.
 # Just a quick glance shows USA names products more frequently, 
@@ -291,27 +293,111 @@ p.8 <- bind_rows(
   mutate(p.noinfo, origin == "No Info")
 )
 
+usa.pct <- p.tokens %>%
+  filter(origin == "USA") %>%
+  count(word) %>%
+  transmute(word, USA = n / sum(n)) %>%
+  arrange(desc(USA))
+  
+
+# Word Frequencies: Top 8 Countries by Listing Count --------------------------
+
 # frequency as percentage for top 8 countries
 frequency.8 <- p.8 %>%
   count(origin, word) %>%
-  mutate(pct = nn / sum(nn))
+  mutate(pct = n / sum(n)) %>%
+  arrange(desc(pct))
 
-# plot word frequencies by location
-ggplot(frequency.8, aes(x = pct, y = ))
-  
+frequency.8$origin <- factor(frequency.8$origin)
+nrow(frequency.8) # 9928
 
-ggplot(frequency, aes(x = other, y = austen, color = abs(austen - other))) +
-  geom_abline(color = "gray40", lty = 2) +
+ggplot(frequency.8, aes(x = n, y = pct, color = pct)) +
+  geom_text(aes(label = word), check_overlap = T, vjust = 1.5) +
   geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
-  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
-  scale_x_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 1), 
+                       low = "steelblue4", 
+                       high = "gray92") +
+  scale_x_log10(labels = waiver()) +
   scale_y_log10(labels = percent_format()) +
-  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
-  facet_wrap(~author, ncol = 2) +
-  theme(legend.position="none") +
-  labs(y = "Jane Austen", x = NULL)
+  facet_wrap(~ origin, ncol = 2) +
+  pd.theme +
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "gray96",
+                                        color = "black")) +
+  labs(title = "Product Listings: Word Frequency ~ Origin", 
+       x = "word frequency", y = "")
 
+# Word Frequencies: subset of Top 8 with n > 1000 -----------------------------
+ff8 <- frequency.8 %>%
+  filter(n > 1000)
 
+nrow(ff8) # 410
 
+ggplot(ff8, aes(x = n, y = pct, color = pct)) +
+  geom_text(aes(label = word), check_overlap = T, vjust = 1.5) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  scale_color_gradient(limits = c(0, 1), 
+                       low = "steelblue4", 
+                       high = "gray92") +
+  scale_x_log10(labels = waiver()) +
+  scale_y_log10(labels = percent_format()) +
+  facet_wrap(~ origin, ncol = 2) +
+  pd.theme +
+  theme(legend.position = "none",
+        panel.border = element_rect(color = "gray82", fill = NA, 
+                                    size = 0.25),
+        strip.background = element_rect(fill = "gray96",
+                                        color = "black")) +
+  labs(title = "Product Listings: Word Frequency ~ Origin (n > 1000)", 
+       x = "word frequency", y = "")
 
+# Word Frequencies: Top 4 Countries by Listing Count --------------------------
+f4 <- frequency.8 %>%
+  filter(origin == "USA" | origin == "UK" | 
+           origin == "Germany" | origin == "Canada")
+
+ggplot(f4, aes(x = n, y = pct, color = pct)) +
+  geom_text(aes(label = word), check_overlap = T, vjust = 1.5) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  scale_color_gradient(limits = c(0, 1), 
+                       low = "steelblue4", 
+                       high = "gray92") +
+  scale_x_log10(labels = waiver()) +
+  scale_y_log10(labels = percent_format()) +
+  facet_wrap(~ origin, ncol = 1) +
+  pd.theme +
+  theme(legend.position = "none",
+        panel.border = element_rect(color = "gray82", fill = NA, 
+                                    size = 0.25),
+        strip.background = element_rect(fill = "gray96",
+                                        color = "black")) +
+  labs(title = "Product Listings: Word Frequency ~ Origin", 
+       x = "word frequency", y = "")
+
+# Word Frequencies: subset of Top 4 with n > 1000 -----------------------------
+ff4 <- f4 %>% filter(n > 1000)
+
+ggplot(ff4, aes(x = n, y = pct, color = pct)) +
+  geom_text(aes(label = word), check_overlap = T, vjust = 1.5) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  scale_color_gradient(limits = c(0, 1), 
+                       low = "steelblue4", 
+                       high = "gray92") +
+  scale_x_log10(labels = waiver()) +
+  scale_y_log10(labels = percent_format()) +
+  facet_wrap(~ origin, ncol = 1) +
+  pd.theme +
+  theme(legend.position = "none",
+        panel.border = element_rect(color = "gray82", fill = NA, 
+                                    size = 0.25),
+        strip.background = element_rect(fill = "gray96",
+                                        color = "black")) +
+  labs(title = "Product Listings: Word Frequency ~ Origin (n > 1000)", 
+       x = "word frequency", y = "")
+
+# Correlation between Words and Origins ---------------------------------------
+
+cor.test(data = frequency.8[frequency.8$origin == "USA", ], ~ pct + n)
+cor.test(data = frequency.8[frequency.8$origin == "China", ], ~ pct + n)
+cor.test(data = frequency.8, ~ pct + n)
 
