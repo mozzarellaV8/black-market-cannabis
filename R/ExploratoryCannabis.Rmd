@@ -20,7 +20,7 @@ Over the years much has been made of so-called darknet markets - anonymous forum
 A first major assumption: all of this is true.
 
 
-```{r load data}
+```{r load data, echo=TRUE}
 # load data -------------------------------------------------------------------
 
 library(dplyr)
@@ -35,7 +35,7 @@ cannabis <- as.data.frame(cannabis)
 
 The Cannabis dataset is subsetted from a larger dataset of daily darknet market listings. The market itself was Agora, the data from Black Market Archives. It covers approximately 18 months of daily listings; another feature of note is that it was, for a time, the largest darknet market in operation following the demise of Silk Road 2. 
 
-```{r}
+```{r, echo=TRUE}
 
 # feedback distribution
 summary(cannabis$fb)
@@ -45,13 +45,13 @@ Here we have feedback scores ranging on a scale from 0 to 5 (5/5 being the best;
 
 It's in a vendor's _and_ client's bests interest to cultivate the highest possible feedback scores. 
 
-```{r}
+```{r, echo=TRUE}
 nrow(cannabis)
 ```
 
 Within the Cannabis subset there are 404,080 listings over 18 months. What are the relative percentages of feedback to this? 
 
-```{r}
+```{r, echo=TRUE}
 
 options(scipen = 999)
 
@@ -70,7 +70,7 @@ cannabis %>%
 
 An initial logistic regression looking at the how fb/feedback might be determined by price and number of words in the feedback listing.
 
-```{r}
+```{r, echo=TRUE}
 library(broom)
 
 model01 <- glm(fb ~ price + f.words, family = binomial, data = cannabis)
@@ -78,35 +78,35 @@ tidy(model01)
 
 ```
 
-```{r}
+```{r, echo=TRUE}
 summary(model01)
 ```
 
 
-```{r}
+```{r, echo=TRUE}
 
 model02 <- glm(fb ~ usd + gold.oz + Index + Kind + Mids + Schwag + brent.oil + wti.oil + p.words, family = "binomial", data = cannabis)
 tidy(model02)
 
 ```
 
-```{r}
+```{r, echo=TRUE}
 summary(model02)
 ```
 
-```{r}
+```{r, echo=TRUE}
 m02_output <- tidy(model02)
 summary(m02_output)
 exp(m02_output$estimate)
 ```
 
-```{r}
+```{r, echo=TRUE}
 m02.out <- coef(summary(model02))
 m02.out[, "Estimate"] <- exp(coef(model02))
 m02.out
 ```
 
-```{r}
+```{r, echo=TRUE}
 augment(model02)
 ```
 
