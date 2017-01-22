@@ -1,3 +1,4 @@
+```{r}
 glm(formula = fb ~ usd + cat + subcat + subsubcat, family = binomial, 
     data = w8train)
 
@@ -60,7 +61,7 @@ Residual deviance: 37082  on 29549  degrees of freedom
 AIC: 37242
 
 Number of Fisher Scoring iterations: 10
-
+```
 
 So the model above did ok, barely better than baseline but both pretty lackluster. Time to tighten up the variables a bit more.
 Maybe will start simpler this time - with just `cat` and `usd`.
