@@ -1,3 +1,5 @@
+Feedback score as it relates to a product's price, category, subcategory, and sub-subcategory. 
+
 ```{r}
 glm(formula = fb ~ usd + cat + subcat + subsubcat, family = binomial, 
     data = w8train)
@@ -67,13 +69,15 @@ So the model above did ok, barely better than baseline but both pretty lackluste
 Maybe will start simpler this time - with just `cat` and `usd`.
 
 Discretize USD into 10 categories by cluster, after removing placeholding outliers.
+
+```{R}
 [    0,  351) [  351, 1075) [ 1075, 2121) [ 2121, 3586) 
         30512          4988          1904          1090 
 [ 3586, 5728) [ 5728, 9382) [ 9382,16978) [16978,30630) 
           478           285           138            39 
 [30630,56677) [56677,84634] 
            26            13 
-
+```
 
 There are some long outputs:
 
@@ -202,16 +206,4 @@ fp <- 1855/(3927+1855)            # 0.3208232
 ```
 
 So 2/3: 1/3 seems to be prevalent ratio...not the most condfident here. over 75% would be nice.
-But also; I'm using all categorical predictors so this should be an ANOVA instead.
-
-
-
-
-
-
-
-
-
-
-
-
+But also; I'm using all categorical predictors so this should be an ANOVA instead (?)
