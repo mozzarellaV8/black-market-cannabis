@@ -38,6 +38,8 @@ _a broad overview of Categories, Subcategories, and Locations on Agora Marketpla
 
 ## Variables Provided
 
+- client feedback - vendor reputation-system; the dependent variable, measure of quality. Consists of an ordinal scale (0-5), as well as written feedback from clients. 
+
 - date 
 - URL  
 - vendor  
@@ -46,7 +48,6 @@ _a broad overview of Categories, Subcategories, and Locations on Agora Marketpla
 - category, subcategory, and sub-subcategory of product
 - origin location - _where a vendor is shipping from_
 - shipping destinations - _where a vendor is willing to ship to_
-- client feedback
 - vendor bio - _in progress_
 - vendor verification - _in progress_ - binary - _a vendor will either be registered, or will have the added bonus of being vouched for on another darknet market._
 
